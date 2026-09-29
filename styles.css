@@ -1,0 +1,72 @@
+/* PhishGuard content-script styles */
+a.phishguard-phishing,
+a.phishguard-phishing:visited,
+a.phishguard-phishing:hover {
+    color: #ef4444 !important;
+    background-color: rgba(220, 53, 69, 0.15) !important;
+    text-decoration: line-through !important;
+    padding: 1px 4px !important;
+    border-radius: 4px !important;
+    border-bottom: 2px solid #ef4444 !important;
+    cursor: not-allowed !important;
+    outline: none !important;
+}
+
+a.phishguard-phishing::before {
+    content: "⛔ ";
+    color: #ef4444;
+    font-weight: bold;
+    font-style: normal;
+    text-decoration: none !important;
+}
+
+a.phishguard-suspicious,
+a.phishguard-suspicious:visited {
+    color: #f59e0b !important;
+    background-color: rgba(255, 193, 7, 0.12) !important;
+    padding: 1px 4px !important;
+    border-radius: 4px !important;
+    border-bottom: 1px dashed #f59e0b !important;
+}
+
+a.phishguard-suspicious::before {
+    content: "⚠ ";
+    color: #f59e0b;
+    font-style: normal;
+}
+
+[data-phishguard-badge] {
+    display: inline-block !important;
+    background: #dc3545 !important;
+    color: #fff !important;
+    font-size: 11px !important;
+    font-family: 'Segoe UI', sans-serif !important;
+    font-weight: 600 !important;
+    padding: 2px 7px !important;
+    border-radius: 4px !important;
+    margin-left: 5px !important;
+    vertical-align: middle !important;
+    white-space: nowrap !important;
+    cursor: default !important;
+    text-decoration: none !important;
+    pointer-events: none !important;
+    line-height: 1.6 !important;
+    animation: pg-badge-in 0.2s ease;
+}
+
+@keyframes pg-badge-in {
+    from { opacity: 0; transform: scale(0.85); }
+    to   { opacity: 1; transform: scale(1); }
+}
+
+[data-phishguard="toasts"] {
+    position: fixed !important;
+    top: 18px !important;
+    right: 18px !important;
+    z-index: 2147483647 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 8px !important;
+    pointer-events: none !important;
+    max-width: 320px !important;
+}

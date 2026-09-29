@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>PhishGuard</title>
+<style>
+    body {
+        width: 340px;
+        margin: 0;
+        padding: 14px;
+        font-family: 'Segoe UI', Tahoma, sans-serif;
+        background: #0d0d0d;
+        color: #e4e9f0;
+        box-sizing: border-box;
+    }
+    .header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #262626;
+        margin-bottom: 10px;
+    }
+    .header-left {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .brand { font-weight: 700; font-size: 1.05rem; color: #ffffff; }
+    .tagline { font-size: 0.7rem; color: #6b7d99; }
+
+    .server-status-pill {
+        font-size: 0.68rem;
+        padding: 3px 8px;
+        border-radius: 12px;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        background: rgba(255,255,255,0.06);
+        color: #9aabc4;
+        cursor: pointer;
+    }
+    .status-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: #6b7d99;
+    }
+    .status-dot.online { background: #4ade80; box-shadow: 0 0 6px #4ade80; }
+    .status-dot.offline { background: #ff6b7a; }
+
+    .url-box {
+        background: #000000;
+        padding: 7px 10px;
+        border-radius: 6px;
+        font-size: 0.75rem;
+        word-break: break-all;
+        color: #d4d4d4;
+        margin-bottom: 10px;
+    }
+
+    /* Verdict card */
+    .verdict-card { text-align:center; padding:14px; border-radius:10px; margin-bottom:10px; }
+    .vc-safe      { background: rgba(25,135,84,0.18); border: 1px solid rgba(74, 222, 128, 0.3); }
+    .vc-suspicious{ background: rgba(255,193,7,0.18); border: 1px solid rgba(255, 193, 7, 0.3); }
+    .vc-phishing  { background: rgba(220,53,69,0.18); border: 1px solid rgba(220, 53, 69, 0.3); }
+    .vc-loading   { background: #262626; }
+    .verdict-icon  { font-size:2rem; margin-bottom:4px; }
+    .verdict-label { font-weight:700; font-size:1.15rem; }
+    .verdict-score { font-size:0.85rem; opacity:0.85; margin-top:4px; }
+    .verdict-safe      { color:#4ade80; }
+    .verdict-suspicious{ color:#ffc107; }
+    .verdict-phishing  { color:#ff6b7a; }
+
+    /* Reasons */
+    .reasons-title { font-size:0.72rem; text-transform:uppercase; color:#6b7d99; margin-bottom:5px; }
+    .reason-item {
+        font-size:0.78rem; padding:5px 8px; margin-bottom:4px;
+        background:#000000; border-radius:5px; color:#c4cfe0;
+    }
+
+    /* Page stats bar */
+    .stats-bar {
+        display: flex;
+        gap: 6px;
+        margin-bottom: 10px;
+        font-size: 0.75rem;
+    }
+    .stat-chip {
+        flex: 1;
+        text-align: center;
+        padding: 5px 4px;
+        border-radius: 6px;
+        font-weight: 600;
+    }
+    .stat-phishing  { background: rgba(220,53,69,0.2);  color: #ff6b7a; }
+    .stat-suspicious{ background: rgba(255,193,7,0.18); color: #ffc107; }
+    .stat-safe      { background: rgba(25,135,84,0.18); color: #4ade80; }
+    .stat-total     { background: rgba(79,209,255,0.1); color: #ffffff; }
+
+    /* Trust domain */
+    .trust-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 10px;
+        font-size: 0.76rem;
+        color: #6b7d99;
+    }
+    .btn-trust {
+        flex-shrink: 0;
+        background: transparent;
+        color: #ffffff;
+        border: 1px solid #ffffff;
+        padding: 4px 10px;
+        border-radius: 5px;
+        font-size: 0.74rem;
+        cursor: pointer;
+        transition: background 0.15s;
+    }
+    .btn-trust:hover   { background: rgba(79,209,255,0.12); }
+    .btn-trust.trusted { color: #4ade80; border-color: #4ade80; cursor: default; }
+    .btn-untrust {
+        background: transparent;
+        color: #ff6b7a;
+        border: none;
+        font-size: 0.7rem;
+        cursor: pointer;
+        padding: 0;
+        text-decoration: underline;
+    }
+
+    /* Rescan button */
+    .btn-rescan {
+        width:100%; background:#1eb163; color:#fff;
+        border:none; padding:9px; border-radius:6px;
+        font-weight:600; cursor:pointer; margin-top:6px;
+    }
+    .btn-rescan:hover     { background:#179c54; }
+    .btn-rescan:disabled  { background:#2a3a52; cursor:not-allowed; }
+
+    /* Settings section modal / toggle */
+    .settings-panel {
+        margin-top: 10px;
+        padding: 10px;
+        background: #000000;
+        border-radius: 8px;
+        border: 1px solid #262626;
+    }
+    .input-field {
+        width: 100%;
+        background: #0d0d0d;
+        border: 1px solid #2a2a2a;
+        color: #e4e9f0;
+        padding: 6px 8px;
+        border-radius: 5px;
+        font-size: 0.74rem;
+        box-sizing: border-box;
+        margin-top: 4px;
+        margin-bottom: 8px;
+    }
+    .btn-small {
+        background: #ffffff;
+        color: #000000;
+        border: none;
+        padding: 5px 10px;
+        border-radius: 4px;
+        font-size: 0.72rem;
+        font-weight: 600;
+        cursor: pointer;
+    }
+    .btn-small:hover { background: #d4d4d4; }
+
+    /* Recently scanned */
+    .recent-section { margin-top:10px; }
+    .recent-toggle {
+        width:100%; background:transparent; border:none; color:#6b7d99;
+        font-size:0.72rem; text-align:left; cursor:pointer; padding:4px 0;
+        display:flex; align-items:center; justify-content:space-between;
+    }
+    .recent-toggle:hover { color:#9aabc4; }
+    .recent-list { margin-top:5px; }
+    .recent-item {
+        display:flex; align-items:center; gap:6px;
+        padding:5px 7px; border-radius:5px; margin-bottom:3px;
+        background:#000000; font-size:0.72rem; cursor:pointer;
+    }
+    .recent-item:hover { background:#16263b; }
+    .recent-url { flex:1; color:#d4d4d4; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .recent-verdict { flex-shrink:0; font-weight:700; font-size:0.68rem; }
+    .rv-phishing  { color:#ff6b7a; }
+    .rv-suspicious{ color:#ffc107; }
+    .rv-safe      { color:#4ade80; }
+
+    .sound-btn {
+        background:transparent; border:none; color:#6b7d99;
+        font-size:0.85rem; cursor:pointer; padding:0;
+    }
+    .sound-btn:hover { color:#9aabc4; }
+
+    .footer {
+        text-align:center; font-size:0.66rem; color:#6b7d99;
+        margin-top:10px; padding-top:8px; border-top:1px solid #262626;
+        display:flex; align-items:center; justify-content:space-between;
+    }
+    .spinner {
+        display:inline-block; width:18px; height:18px;
+        border:3px solid #2a2a2a; border-top:3px solid #ffffff;
+        border-radius:50%; animation:spin 1s linear infinite;
+    }
+    @keyframes spin { to { transform:rotate(360deg); } }
+</style>
+</head>
+<body>
+
+<div class="header">
+    <div class="header-left">
+        <img src="icon.png" width="22" height="22" alt="PhishGuard" style="border-radius:4px;" />
+        <div>
+            <div class="brand">PhishGuard</div>
+            <div class="tagline">Endpoint Protection Agent</div>
+        </div>
+    </div>
+    <div class="server-status-pill" id="serverStatusPill" title="Click to configure Central Server">
+        <span class="status-dot" id="serverStatusDot"></span>
+        <span id="serverStatusText">Server</span>
+    </div>
+</div>
+
+<div class="url-box" id="currentUrl">Loading...</div>
+
+<div id="verdictArea" class="verdict-card vc-loading">
+    <div class="spinner"></div>
+    <div style="margin-top:6px;font-size:0.85rem;color:#9aabc4;">Scanning page...</div>
+</div>
+
+<div id="reasonsArea" style="display:none;">
+    <div class="reasons-title">Risk Signals & Heuristics</div>
+    <div id="reasonsList"></div>
+</div>
+
+<!-- Page link scan stats -->
+<div id="statsBar" class="stats-bar" style="display:none;">
+    <div class="stat-chip stat-total"  id="statTotal">0 scanned</div>
+    <div class="stat-chip stat-phishing"   id="statPhishing">0 phishing</div>
+    <div class="stat-chip stat-suspicious" id="statSuspicious">0 suspicious</div>
+    <div class="stat-chip stat-safe"   id="statSafe">0 safe</div>
+</div>
+
+<!-- Trust domain -->
+<div class="trust-row" id="trustRow" style="display:none;">
+    <span id="trustLabel">Trust this domain?</span>
+    <button class="btn-trust" id="trustBtn">+ Trust</button>
+    <button class="btn-untrust" id="untrustBtn" style="display:none;">Remove</button>
+</div>
+
+<button id="rescanBtn" class="btn-rescan">🔄 Re-scan Page Now</button>
+
+<!-- Server Settings Configuration Panel -->
+<div class="settings-panel" id="settingsPanel" style="display:none;">
+    <div style="font-weight:700;font-size:0.75rem;color:#ffffff;margin-bottom:6px;">Central Server Settings</div>
+    <div style="font-size:0.68rem;color:#9aabc4;">Central Server Endpoint:</div>
+    <input type="text" id="serverUrlInput" class="input-field" placeholder="https://your-site.netlify.app (blank = packaged default)" />
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+        <button id="saveServerBtn" class="btn-small">Save & Connect</button>
+        <span id="saveStatusMsg" style="font-size:0.68rem;color:#4ade80;"></span>
+    </div>
+    <div style="margin-top:8px;font-size:0.66rem;color:#6b7d99;word-break:break-all;">
+        Client ID: <span id="displayClientId" style="color:#d4d4d4;font-family:monospace;">--</span>
+    </div>
+    <div style="margin-top:10px;padding-top:8px;border-top:1px solid #262626;">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+            <button id="updateRulesBtn" class="btn-small" style="background:#ffffff;">🔄 Update Rules</button>
+            <span id="rulesStatusMsg" style="font-size:0.66rem;color:#9aabc4;"></span>
+        </div>
+        <div id="rulesInfoMsg" style="margin-top:6px;font-size:0.64rem;color:#6b7d99;">
+            Pulls the latest whitelist + phishing rules from the Central Server immediately, without waiting for the next automatic sync.
+        </div>
+    </div>
+</div>
+
+<!-- Recently scanned -->
+<div class="recent-section" id="recentSection" style="display:none;">
+    <button class="recent-toggle" id="recentToggleBtn">
+        <span>🕘 Recent Threat Telemetry</span>
+        <span id="recentChevron">▾</span>
+    </button>
+    <div id="recentList" class="recent-list" style="display:none;"></div>
+</div>
+
+<div class="footer">
+    <span>PhishGuard v1.4 • <span style="color:#4ade80;font-family:monospace;">[ ONLINE ]</span></span>
+    <div style="display:flex;gap:8px;align-items:center;">
+        <button class="sound-btn" id="settingsToggleBtn" title="Server Settings">⚙️</button>
+        <button class="sound-btn" id="soundBtn" title="Toggle sound alerts">🔔</button>
+    </div>
+</div>
+
+<script src="config.js"></script>
+<script src="popup.js"></script>
+</body>
+</html>

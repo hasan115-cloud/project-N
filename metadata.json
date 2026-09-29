@@ -1,0 +1,6 @@
+{
+  "name": "PhishGuard Enterprise Security Hub",
+  "description": "Centralized enterprise client-server security monitoring, telemetry, threat detection, and policy management for PhishGuard Chrome Extensions.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

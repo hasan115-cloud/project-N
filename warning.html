@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>PhishGuard — Phishing Site Blocked</title>
+<style>
+    body {
+        margin: 0;
+        font-family: 'Segoe UI', Tahoma, sans-serif;
+        background: linear-gradient(135deg, #2a0a0a 0%, #1a0606 100%);
+        color: #fff;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 40px 20px;
+        box-sizing: border-box;
+    }
+    .container {
+        max-width: 640px;
+        width: 100%;
+        background: rgba(0,0,0,0.4);
+        border: 2px solid #dc3545;
+        border-radius: 16px;
+        padding: 40px;
+        text-align: center;
+        box-shadow: 0 4px 30px rgba(220,53,69,0.3);
+    }
+    .icon { font-size: 5rem; margin-bottom: 16px; }
+    h1 { font-size: 2rem; color: #ff6b7a; margin-bottom: 10px; }
+    .subtitle { color: #ddc; font-size: 1.05rem; margin-bottom: 24px; line-height: 1.5; }
+    .url-box {
+        background: rgba(255,255,255,0.05);
+        padding: 12px 16px;
+        border-radius: 8px;
+        word-break: break-all;
+        color: #ff9aa3;
+        font-family: monospace;
+        margin-bottom: 24px;
+        font-size: 0.95rem;
+        border: 1px solid rgba(220,53,69,0.4);
+        text-align: left;
+    }
+    .score-pill {
+        display: inline-block;
+        background: rgba(220,53,69,0.25);
+        color: #ff6b7a;
+        font-weight: 700;
+        padding: 8px 18px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+    }
+    .reasons {
+        background: rgba(255,255,255,0.04);
+        padding: 14px 18px;
+        border-radius: 8px;
+        text-align: left;
+        margin-bottom: 24px;
+    }
+    .reasons-title {
+        font-size: 0.85rem;
+        color: #f8b4ba;
+        margin-bottom: 8px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    .reasons ul { margin: 0; padding-left: 22px; }
+    .reasons li { padding: 4px 0; color: #f0d8da; font-size: 0.95rem; }
+    .btn-group { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+    .btn-primary {
+        background: #198754; color: #fff; border: none;
+        padding: 14px 28px; border-radius: 8px;
+        font-size: 1.05rem; font-weight: 700; cursor: pointer;
+    }
+    .btn-primary:hover { background: #157445; }
+    .btn-secondary {
+        background: transparent; color: #888; border: 1px solid #555;
+        padding: 14px 28px; border-radius: 8px;
+        font-size: 0.88rem; cursor: pointer;
+    }
+    .btn-secondary:hover { color: #ccc; border-color: #999; }
+    .footer { margin-top: 30px; color: #888; font-size: 0.78rem; }
+
+    body.suspicious { background: linear-gradient(135deg, #2a1f0a 0%, #1a1406 100%); }
+    body.suspicious .container { border-color: #f59e0b; box-shadow: 0 4px 30px rgba(245,158,11,0.3); }
+    body.suspicious h1 { color: #fbbf24; }
+    body.suspicious .url-box { color: #fcd34d; border-color: rgba(245,158,11,0.4); }
+    body.suspicious .score-pill { background: rgba(245,158,11,0.25); color: #fbbf24; }
+    body.suspicious .reasons-title { color: #fde68a; }
+</style>
+</head>
+<body>
+
+<div class="container">
+    <div class="icon">🛑</div>
+    <h1>Phishing Site Blocked</h1>
+    <div class="subtitle">
+        PhishGuard has detected this website as a likely phishing attempt
+        and blocked access to protect your personal information.
+    </div>
+
+    <div class="url-box" id="blockedUrl"></div>
+    <div class="score-pill" id="scorePill">Risk Score: —</div>
+
+    <div class="reasons" id="reasonsBlock" style="display:none;">
+        <div class="reasons-title">Why this was flagged</div>
+        <ul id="reasonsList"></ul>
+    </div>
+
+    <div class="btn-group">
+        <button class="btn-primary" id="btnBack">← Return to Safety</button>
+        <button class="btn-secondary" id="btnProceed">I understand the risk, proceed anyway</button>
+    </div>
+
+    <div class="footer">
+        Protected by PhishGuard Enterprise Security Hub<br>
+        If you believe this is a false positive, report it via the extension popup.
+    </div>
+</div>
+
+<script src="warning.js"></script>
+</body>
+</html>

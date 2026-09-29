@@ -1,0 +1,20 @@
+@import "tailwindcss";
+
+/* ─── Print: show only the report document, never the dashboard chrome ─── */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  #phishguard-report-printable,
+  #phishguard-report-printable * {
+    visibility: visible;
+  }
+  #phishguard-report-printable {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    box-shadow: none !important;
+    border: none !important;
+  }
+}

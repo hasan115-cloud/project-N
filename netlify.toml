@@ -1,0 +1,40 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+  functions = "netlify/functions"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+# Secrets (DATABASE_URL, DASHBOARD_BASIC_AUTH, ENROLLMENT_KEY) are NEVER set in this file.
+# Add them in Netlify → Site configuration → Environment variables. See DEPLOYMENT.md.
+
+[functions]
+  node_bundler = "esbuild"
+  # The extension ZIP is assembled at request time from these files.
+  included_files = ["extension/**", "shared/**"]
+
+# API → serverless function. `force = true` so the rule wins over the SPA fallback below.
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/api/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+[[headers]]
+  for = "/api/*"
+  [headers.values]
+    Cache-Control = "no-store"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    X-Frame-Options = "DENY"
+    Referrer-Policy = "no-referrer"
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains"
